@@ -4,11 +4,14 @@
 #' @param path_to_csv where to find the csv file
 #' @keywords read data
 #' @export
+#' @import stringr
+#' @import dplyr
+#' @importFrom lubridate dmy_hms
 #' @examples
 #' read_ATracker_data("./data.csv")
 
 read_ATracker_data <- function(path_to_csv) {
-  data <- read_csv2(path_to_csv)
+  data <- readr::read_csv2(path_to_csv)
   names(data) <- str_trim(names(data))
 
   data2 <- data %>%
