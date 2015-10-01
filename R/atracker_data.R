@@ -1,17 +1,39 @@
 
-#' A function to read ATracker csv data file
+#' A function to read ATracker csv data files into one data frame and transform data for analysis
 #'
-#' @param path_to_csv where to find the csv file
-#' @keywords read data
+#' @param path_to_data where to find the csv files
+#' @keywords load transform data
+#'
 #' @export
-#' @import stringr
-#' @import dplyr
+#'
+#' @importFrom dplyr %>%
+#' @importFrom dplyr mutate
+#' @importFrom dplyr left_join
+#' @importFrom dplyr rename
+#' @importFrom dplyr select
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_replace
+#' @importFrom stringr str_extract
+#' @importFrom stringr str_trim
 #' @importFrom lubridate dmy_hms
+#'
 #' @examples
-#' read_ATracker_data("./data.csv")
+#' atracker_data("./data")
 
-read_ATracker_data <- function(path_to_csv) {
-  data <- readr::read_csv2(path_to_csv)
+atracker_data <- function(path_to_data) {
+  ## find csv files with data
+  files <- list.files(path_to_data)
+  csv_files <- files[str_detect(files, '[.]csv')]
+
+  ## combine csv files to one data frame
+  data <- data.frame()
+  for (file in csv_files) {
+    temp <- readr::read_csv2(paste0(path_to_data, '\\', file))
+    data <- rbind(data, temp)
+  }
+
+  ## start transforming the data
   names(data) <- str_trim(names(data))
 
   data2 <- data %>%
